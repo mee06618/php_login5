@@ -25,11 +25,13 @@ class APP__UsrArticleController {
 
     $id = $this->articleService->writeArticle($title, $body);
 
-    jsLocationReplaceExit("detail.php?id=${id}", "${id}번 게시물이 생성되었습니다.");
+    jsLocationReplaceExit("list.php", "${id}번 게시물이 생성되었습니다.");
   }
+
 
   public function actionShowList() {
     $articles = $this->articleService->getForPrintArticles();
+    $totalcount= $this->articleService->getForCountArticles();
 
     require_once App__getViewPath("usr/article/list");
   }
@@ -45,17 +47,22 @@ class APP__UsrArticleController {
   }
   public function actionShowDetail() {
     $id = getIntValueOr($_GET['id'], 0);
-
+    
     if ( $id == 0 ) {
       jsHistoryBackExit("번호를 입력해주세요.");
     }
     
     $article = $this->articleService->getForPrintArticleById($id);
 
+    echo "<script> if ( !localStorage[$id] ) alert('<?=hit($id);?>');</script>"; //ajax로 데이터넘기기
+    $this->articleService->hitArticle($id);
+    
+      
+    
     if ( $article == null ) {
       jsHistoryBackExit("${id}번 게시물은 존재하지 않습니다.");
     }
-
+    
     require_once App__getViewPath("usr/article/detail");
   }
 
@@ -75,3 +82,4 @@ class APP__UsrArticleController {
     require_once App__getViewPath("usr/article/modify");
   }
 }
+?>

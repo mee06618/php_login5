@@ -7,6 +7,13 @@ class APP__ArticleRepository {
     $sql->add("ORDER BY A.id DESC");
     return DB__getRows($sql);
   }
+  public function getForCountArticles(): int{
+    $sql = DB__secSql();
+    $sql->add("SELECT count(*)");
+    $sql->add("FROM article");
+    
+    return DB__getRowIntValue($sql,0);
+  }
 
   public function getForPrintArticleById(int $id): array|null {
     $sql = DB__secSql();
@@ -26,5 +33,14 @@ class APP__ArticleRepository {
     $id = DB__insert($sql);
 
     return $id;
+  }
+
+  public function hitArticle(int $id){
+    $sql = DB__secSql();
+    $sql->add("UPDATE article");
+    $sql->add("SET hit=hit+1");
+    $sql->add("where id = ?",$id);
+    DB__UPDATE($sql);
+    
   }
 }

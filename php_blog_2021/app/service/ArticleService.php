@@ -18,4 +18,10 @@ class APP__ArticleService {
   public function writeArticle(string $title, string $body): int {
     return $this->articleRepository->writeArticle($title, $body);
   }
+  public function hitArticle(int $id){
+    $this->articleRepository->hitArticle($id);
+  }
+  public function getForCountArticles():int{
+   return $this->articleRepository->getForCountArticles();
+  }
 }

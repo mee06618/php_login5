@@ -1,7 +1,75 @@
 <?php
 $pageTitle = "게시물 리스트";
+
 ?>
 <?php require_once __DIR__ . "/../head.php"; ?>
+<script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+<script type="text/javascript">
+    
+    var totalData = <?=$totalcount?>;    // 총 데이터 수
+    var dataPerPage = 5;    // 한 페이지에 나타낼 데이터 수
+    var pageCount = 5;        // 한 화면에 나타낼 페이지 수
+    
+    function paging(totalData, dataPerPage, pageCount, currentPage){
+          
+
+        
+        var totalPage = Math.ceil(totalData/dataPerPage);    // 총 페이지 수
+        var pageGroup = Math.ceil(currentPage/pageCount);    // 페이지 그룹
+        
+
+        
+        var last = pageGroup * pageCount;    // 화면에 보여질 마지막 페이지 번호
+        if(last > totalPage)
+            last = totalPage;
+        var first = last - (pageCount-1);    // 화면에 보여질 첫번째 페이지 번호
+        if(first<1)first=1;
+        var next = last+1;
+        var prev = first-1;
+        
+
+ 
+        var $pingingView = $("#paging");
+        
+        var html = "";
+        
+        if(prev > 0)
+            html += "<a href=# id='prev'><</a> ";
+        
+        for(var i=first; i <= last; i++){
+            html += "<a href='#' id=" + i + ">" + i + "</a> ";
+        }
+        
+        if(last < totalPage)
+            html += "<a href=# id='next'>></a>";
+        
+        $("#paging").html(html);    // 페이지 목록 생성
+        $("#paging a").css("color", "black");
+        $("#paging a#" + currentPage).css({"text-decoration":"none", 
+                                           "color":"red", 
+                                           "font-weight":"bold"});    // 현재 페이지 표시
+                                           
+        $("#paging a").click(function(){
+            
+            var $item = $(this);
+            var $id = $item.attr("id");
+            var selectedPage = $item.text();
+            
+            if($id == "next")    selectedPage = next;
+            if($id == "prev")    selectedPage = prev;
+            
+            paging(totalData, dataPerPage, pageCount, selectedPage);
+        });
+                                           
+    }
+    
+    $("document").ready(function(){        
+        paging(totalData, dataPerPage, pageCount, 1);
+    });
+</script>
 <style>
   body, ul, li {
   margin:0;
@@ -148,7 +216,7 @@ input{
 <hr>
 <section class="contents">
 <div class = "title">
-<h2 class="titleWrap">자유게시판</h2>
+<h2 class="titleWrap">자유게시판 </h2>
 <p>자유롭게 대화하세요</p>
 </div>
 <div class="board-search">
@@ -181,20 +249,23 @@ input{
   <?php foreach ( $articles as $article ) { ?>
     <tr>
     <?php
+    
     $detailUri = "detail.php?id=${article['id']}";
     ?>
     <td class="num"><span><a href="<?=$detailUri?>"><?=$article['id']?></a></span></td>
     <td><a href="<?=$detailUri?>"><?=$article['title']?></a></td>
     <td class="regdate"><?=$article['regDate']?></td>
-    <td class="hit">1</td>    
+    <td class="hit"><?=$article['hit']?></td>    
+
     </tr>  
   <?php } ?>
   
   </tbody>
   </table>
+  <div id="paging"></div>
 </div>
-<div class="write">
-  <button a href="write.php">글 작성</button>
-</div>
+<form class="write" action=write.php>
+  <input type="submit" value="글 작성">
+  </form>
 </section>
 <?php require_once __DIR__ . "/../foot.php"; ?>

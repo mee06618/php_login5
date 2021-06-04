@@ -1,6 +1,17 @@
 <?php
 $pageTitle = "게시물 상세내용, ${id}번 게시물";
+$id = $_GET['id'];
+
 ?>
+<script>   
+
+    if(!localStorage[<?=$id?>]){
+      localStorage.setItem(<?=$id?>,1);
+    }
+    
+
+</script>
+
 <?php require_once __DIR__ . "/../head.php"; ?>
 
 <div>
@@ -15,4 +26,5 @@ $pageTitle = "게시물 상세내용, ${id}번 게시물";
 <div>수정날짜 : <?=$article['updateDate']?></div>
 <div>제목 : <?=$article['title']?></div>
 <div>내용 : <?=$article['body']?></div>
+<div>조회수 : <?=$article['hit']?></div>
 <?php require_once __DIR__ . "/../foot.php"; ?>
